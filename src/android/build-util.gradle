@@ -1,0 +1,47 @@
+import groovy.json.JsonSlurper
+
+ext {
+  buildVersionCode = {
+    def userDir = System.getProperty("user.dir")
+    def inputFile = file("${userDir}/../package.json")
+    if (!inputFile.canRead()) {
+      throw new GradleException("Could not read ${inputFile}, check the root directory")
+    }
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+    def buildProps = new Properties()
+    buildProps.load(new FileInputStream("${userDir}/../build.properties"))
+    def (major, minor, patch) = packageJson.version.split('-')[0].tokenize('.').collect { it.toInteger() }
+    def buildNumber = buildProps.getProperty("android.build.number").toInteger()
+
+    (major * 100000) + (minor * 10000) + ((patch != null ? patch : 0) * 100) + buildNumber
+  }
+
+  buildVersionName = {
+    def inputFile = file("${System.getProperty("user.dir")}/../package.json")
+    if (!inputFile.canRead()) {
+      throw new GradleException("Could not read ${inputFile}, check the root directory")
+    }
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+    def packageVersion = packageJson.version
+    def snapIndex = packageVersion.indexOf("-SNAPSHOT")
+    def versionName = packageVersion
+    if (snapIndex != -1) {
+      def sha1 = "git rev-parse --short HEAD".execute().text.trim()
+      def version = packageVersion.substring(0, snapIndex)
+      versionName = "${version}-${sha1}"
+    }
+
+    versionName
+  }
+
+  buildKeystoreProps = {
+    def keystorePropertiesFile = file("${System.getProperty("user.dir")}/../config/keystore.properties")
+    if (!keystorePropertiesFile.canRead()) {
+      throw new GradleException("Could not read ${keystorePropertiesFile}, check the root directory")
+    }
+    def keystoreProperties = new Properties()
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+    keystoreProperties
+  }
+}

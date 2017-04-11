@@ -1,0 +1,15 @@
+{
+  "name": "build-tools",
+  "version": "0.0.1",
+  "description": "Common build tools for iOS and Android",
+  "main": "src/index.js",
+  "repository": "git@github.com:swiftwallet/build-tools.git",
+  "license": "MIT",
+  "bin": {
+    "build-tools": "src/index.js"
+  },
+  "dependencies": {
+    "commander": "^2.9.0",
+    "properties-parser": "Xavi-/node-properties-parser"
+  }
+}
