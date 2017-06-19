@@ -8,12 +8,10 @@ ext {
       throw new GradleException("Could not read ${inputFile}, check the root directory")
     }
     def packageJson = new JsonSlurper().parseText(inputFile.text)
-    def buildProps = new Properties()
-    buildProps.load(new FileInputStream("${userDir}/../build.properties"))
     def (major, minor, patch) = packageJson.version.split('-')[0].tokenize('.').collect { it.toInteger() }
-    def buildNumber = buildProps.getProperty("android.build.number").toInteger()
+    def commitsCount = "git rev-list --all --count".execute().text.trim().toInteger()
 
-    (major * 100000) + (minor * 10000) + ((patch != null ? patch : 0) * 100) + buildNumber
+    (major * 100000) + (minor * 10000) + ((patch != null ? patch : 0) * 100) + commitsCount
   }
 
   buildVersionName = {

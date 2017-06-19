@@ -16,6 +16,11 @@ const GitUtil = {
     return {sha1, sha1Decimal: parseInt(`1${sha1.toUpperCase()}`, 16)};
   },
 
+  getTotalCommitsCount: () => {
+    const commitsCount = execSync('git rev-list --all --count').toString().trim();
+    return parseInt(commitsCount, 10);
+  },
+
   getSha1FromDecimal: decimal => parseInt(decimal, 10).toString(16).substring(1),
 
   incrementBuild: (platform, customBuildNumber) => {
@@ -28,7 +33,7 @@ const GitUtil = {
     const buildNoProp = `${platform}.build.number`;
 
     const currentBuildNumber = parseInt(buildProps.get(buildNoProp), 10);
-    const newBuildNumber = parseInt(customBuildNumber, 10) || (currentBuildNumber ? currentBuildNumber + 1 : 0);
+    const newBuildNumber = parseInt(customBuildNumber, 10) || GitUtil.getTotalCommitsCount();
 
     console.log('======================');
     console.log(`Platform: ${platform}`);
