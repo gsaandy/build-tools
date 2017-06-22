@@ -1,6 +1,6 @@
 {
   "name": "build-tools",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Common build tools for iOS and Android",
   "main": "src/index.js",
   "repository": "git@github.com:swiftwallet/build-tools.git",
